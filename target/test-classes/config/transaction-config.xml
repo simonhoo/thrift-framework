@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-3.2.xsd 
+       http://www.springframework.org/schema/aop 
+       http://www.springframework.org/schema/aop/spring-aop-3.2.xsd 
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+	<!-- 使用Spring基于数据源的事务管理器对事务进行管理 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="druidDataSource" />
+	</bean>
+	
+	<!-- 注解控制事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />  
+	
+	<!-- 事务控制策略及事务转播方式：配置insert,add,save,update,modify,merge,edit,del,remove,execute,service开头的方法，事务传播方式为REQUIRED--> 
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="insert*" propagation="REQUIRED" read-only="false" rollback-for="org.apache.thrift.TException"/>
+			<tx:method name="add*" propagation="REQUIRED"  read-only="false" rollback-for="org.apache.thrift.TException"/>
+			<tx:method name="save*" propagation="REQUIRED" read-only="false" rollback-for="org.apache.thrift.TException"/>
+			<tx:method name="update*" propagation="REQUIRED" read-only="false" rollback-for="org.apache.thrift.TException"/>
+			<tx:method name="modify*" propagation="REQUIRED" read-only="false" rollback-for="org.apache.thrift.TException"/>
+			<tx:method name="merge*" propagation="REQUIRED" read-only="false" rollback-for="org.apache.thrift.TException"/>
+			<tx:method name="edit*" propagation="REQUIRED" read-only="false" rollback-for="org.apache.thrift.TException"/>
+			
+			<tx:method name="del*" propagation="REQUIRED" read-only="false" rollback-for="org.apache.thrift.TException"/>
+			
+			
+			<tx:method name="remove*" propagation="REQUIRED" read-only="false" rollback-for="org.apache.thrift.TException"/>
+			<tx:method name="execute*" propagation="REQUIRED" read-only="false" rollback-for="org.apache.thrift.TException"/>
+			<tx:method name="service*" propagation="REQUIRED" read-only="false" rollback-for="org.apache.thrift.TException"/>
+			<tx:method name="find*" propagation="SUPPORTS" read-only="true" />
+			<tx:method name="get*" propagation="SUPPORTS" read-only="true" />
+			<tx:method name="select*" propagation="SUPPORTS" read-only="true" />
+			<tx:method name="query*" propagation="SUPPORTS" read-only="true" />
+			<tx:method name="*" propagation="SUPPORTS" read-only="true" rollback-for="org.apache.thrift.TException"/>
+			
+		</tx:attributes>
+	</tx:advice>
+	
+	
+	<!-- 使用Spring AOP配置声明式事务，配置哪些类的方法进行事务管理，当前所有包中的子包， 类中所有方法需要，还需要参考tx:advice的设置 -->
+	<aop:config>
+		<aop:pointcut id="mainManagerMethod" expression="execution(* com.cottsoft.thrift.framework.server.service.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="mainManagerMethod" />
+	</aop:config>
+	
+</beans>
