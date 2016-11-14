@@ -30,6 +30,19 @@ public class SysUserServiceImpl implements Iface {
 	}
 }
 ```
+### Server Spring xml
+```
+	<!-- 服务工厂 -->
+	<bean id="serverFactory"
+		class="com.cottsoft.thrift.framework.server.ThriftMultiBinaryServerFactory">
+		<property name="baseServiceImplPackage" value="com.cottsoft.thrift.framework.server.service" />
+		<property name="port" value="${port.default}" />
+		<property name="timeout" value="${timeout.default}" />
+	</bean>
+
+	<!-- 使用服务工厂启动服务 -->
+	<bean factory-bean="serverFactory" factory-method="start" />
+```
 
 
 ## Client
