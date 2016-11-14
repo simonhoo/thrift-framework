@@ -3,17 +3,48 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cottsoft.thrift.framework</groupId>
 	<artifactId>thrift-framework</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>Thrift Framework</name>
+	<version>0.0.1</version>
+	<name>${project.groupId}:${project.artifactId}</name>
 	<description>Thrift Framework</description>
-
+	<url>https://github.com/simonhoo/thrift-framework</url>
+	
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	
 	<developers>
 		<developer>
-			<name>Simon.Hoo</name>
-			<email>info@cottsoft.com</email>
-			<url>http://www.cottsoft.com</url>
+			<name>Simon Hoo</name>
+			<email>simon@cottsoft.com</email>
+			<organization>cottsoft</organization>
+			<organizationUrl>http://www.cottsoft.com</organizationUrl>
 		</developer>
 	</developers>
+	
+	<scm>
+		<connection>
+			scm:git:https://github.com/simonhoo/thrift-framework.git
+		</connection>
+		<developerConnection>
+			scm:git:https://github.com/simonhoo/thrift-framework.git
+		</developerConnection>
+		<url>https://github.com/simonhoo/thrift-framework</url>
+		<tag>v0.0.1</tag>
+	</scm>
+	
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 
 	<properties>
 		<skipTests>true</skipTests>
@@ -33,6 +64,10 @@
 		<jdbc.driver.mysql.version>5.1.29</jdbc.driver.mysql.version>
 		<org.mybatis.version>3.2.2</org.mybatis.version>
 		<mybatis.spring.version>1.2.2</mybatis.spring.version>
+		
+		<maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
+		<maven-source-plugin.version>2.2.1</maven-source-plugin.version>
+		<maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -294,6 +329,59 @@
 						<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
 					</classpathContainers>
 				</configuration>
+			</plugin>
+			
+			<!-- 配置生成javadoc和sources包的插件： -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven-source-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin.version}</version>
+				<configuration>
+					<show>private</show>
+					<nohelp>true</nohelp>
+					<aggregate>true</aggregate>
+					<charset>UTF-8</charset>
+					<encoding>UTF-8</encoding>
+					<docencoding>UTF-8</docencoding>
+					<javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- GPG sign -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>${maven-gpg-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
